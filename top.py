@@ -20,7 +20,7 @@ class MaskAssembly(object):
             pooler_type=pooler_type,
             canonical_level=2)
 
-
+    # 该方法的功能类似于在类中重载 () 运算符，使得类实例对象可以像调用普通函数那样，以“对象名()”的形式使用。
     def __call__(self, bases, proposals, gt_instances):
         if gt_instances is not None:
             dense_info = proposals["instances"]

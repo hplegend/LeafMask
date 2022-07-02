@@ -97,6 +97,7 @@ class DAGMask(nn.Module):
         x = self.tower2(x)
         outputs = {"bases": [x]}
 
+        # dict 结构
         losses = {}
         # auxiliary thing semantic loss
         if self.training and self.loss_on:
@@ -104,6 +105,8 @@ class DAGMask(nn.Module):
             gt_sem = targets.unsqueeze(1).float()
             gt_sem = F.interpolate(
                 gt_sem, scale_factor=1 / self.common_stride)
+
+            # 交叉熵损失
             seg_loss = F.cross_entropy(
                 sem_out, gt_sem.squeeze(1).long())
             losses['loss_basis_sem'] = seg_loss * self.sem_loss_weight

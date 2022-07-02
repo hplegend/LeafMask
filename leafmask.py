@@ -62,11 +62,19 @@ class LeafMask(nn.Module):
         self.normalizer = lambda x: (x - pixel_mean) / pixel_std
         self.to(self.device)
 
-
+    # 为啥这里在训练的时候会返回loss？ forward就是定义模型的计算，不应该返回结果？ 莫非这个结果是任意定义的？
+    # 这个是adnet网络定义的。从adnet的给出的模型看，他们定义的就是这样的。so，这里返回的也是loss
     def forward(self, batched_inputs):
+        # 把图像放入到gpu中
         images = [x["image"].to(self.device) for x in batched_inputs]
+
+        # 图像预先处理：均值化
         images = [self.normalizer(x) for x in images]
+
+        # torch tensor化。利用反向求导必须得步骤
         images = ImageList.from_tensors(images, self.backbone.size_divisibility)
+
+        # backbone： 骨干网络。通常都是用于特征生成。核心是卷积
         features = self.backbone(images.tensor)
 
         if self.combine_on:
